@@ -7,52 +7,16 @@ category: linux
 tags: bash, find, sed
 comments: true
 ---
-- [Kernal](#kernal)
-    - [linux](#linux)
-    - [android](#android)
 - [Find](#find)
 - [Sed](#sed)
 - [Bash](#bash-ish)
     - [String operation](#string-operation)
     - [Loop](#loop)
     - [IF-ELSE](#if-else)
+- [Kernal](#kernal)
+    - [linux](#linux)
+    - [android](#android)
 
-
----
-<br/>
-# Kernal
-
-## Linux
-To find out what version of Linux (distro) you are running, try these 3 commands:
-
-    $ cat /etc/*-release
-    $ uname -a
-    $ cat /proc/version
-
-## Android
-### How to check android CPU is 32 or 64
-
-```bash
-$ cat /proc/cpuinfo
-```
-
-the result will looks like this:
-```
-Processor : AArch64 Processor rev 4 (aarch64)
-processor : 0
-processor : 1
-processor : 2
-processor : 3
-Features : fp asimd evtstrm aes pmull sha1 sha2 crc32
-CPU implementer : 0x41
-CPU architecture: AArch64
-CPU variant : 0x0
-CPU part : 0xd03
-CPU revision : 4
-
-Hardware : Amlogic
-Serial : adsf
-```
 
 ---
 <br/>
@@ -222,3 +186,40 @@ Note:
     # 0       expression evaluated to true.
     # 1       expression evaluated to false or expression was missing.
     # >1      An error occurred.
+
+# Kernal
+
+## Linux
+To find out what version of Linux (distro) you are running, try these 3 commands:
+
+    $ cat /etc/*-release
+    $ uname -a
+    $ cat /proc/version
+
+## Android
+### How to check android CPU is 32 or 64
+
+```bash
+$ cat /proc/cpuinfo
+```
+
+the result will looks like this:
+```
+Processor : AArch64 Processor rev 4 (aarch64)
+processor : 0
+processor : 1
+processor : 2
+processor : 3
+Features : fp asimd evtstrm aes pmull sha1 sha2 crc32
+CPU implementer : 0x41
+CPU architecture: AArch64
+CPU variant : 0x0
+CPU part : 0xd03
+CPU revision : 4
+
+Hardware : Amlogic
+Serial : adsf
+```
+
+---
+<br/>

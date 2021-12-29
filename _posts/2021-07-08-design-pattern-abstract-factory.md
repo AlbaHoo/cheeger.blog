@@ -9,21 +9,24 @@ comments: true
 
 # 介绍
 准备做一起设计模型的介绍，主要的参考是一本书：Design Patterns Elements of Reusable Object-Oriented Software
-作者是4位大侠，Erich，Richard，Ralph，John，也叫四人帮, GoF（Gang of Four）
+作者是4位作者，Erich，Richard，Ralph，John，也叫四人帮, GoF(Gang of Four)。
+
+所有的模型都是基于一个目的：
 > Coding to interfaces, not implementation
 
 # 第一期 工厂模型：Factory Pattern
 
-# 背景介绍
+## 背景介绍
 
-### 假设你是一个老板，你要翻译很多份文件，怎么处理。
+    假设你是一个老板，你要翻译很多份文件，怎么处理。
 
-#### 方案1: 你一个人自己做 - Functional Programming
-#### 方案2: 组织一个团队 - Object-oriented Programming
+    工厂模式的目的就是统一标准，老板只需要和经理Factory Class交流，再由经理来进行重新分配工作。
 
-如何组织一个团队是技巧的，把Class比做团队中一个成员的话， 现在我们来组建一个工厂模式的团队，经理是Factory Class，成员是具体干活的Member Class。
 
-工厂模式的目的就是统一标准，老板只需要和经理Factory Class交流，再由经理来进行重新分配工作。
+1. 招募Class作为团队成员。
+2. 组建一个工厂模式的团队
+3. 团队领导就是Factory Class
+4. 成员就是Member Class
 
 我们来编一个短的话剧吧，出场人物，
 
@@ -48,15 +51,12 @@ comments: true
 
     老板: 小F，翻译法语文件。
     小F把文件递给小黑
-    小F：老板知道了
     老板：小F，翻译一项英文文件。
     小F把文件递给了小红。
-    小F：老板知道了。
     老板：葡萄牙语谁会，去招人吧。
     小F招了一个会葡萄牙语言的，并且和他约定好，以后把文件递给他就直接翻译成英文不要说别的。
     老板：小F，翻译葡萄牙文件。
     小F把文件递给了新招的人。
-    小F：老板知道了。
 
 # 具体的例子
 

@@ -24,22 +24,24 @@
 
 #### **关于我**
 
-1. 具有6年Ruby on Rails全栈开发经验, 熟悉rspec做TDD开发;
-1. 具有4年React/React Native开发经验
-2. 熟悉PostgreSQL, 数据库语言SQL, 部署工具sqitch, RESTful自动部署工具PostgREST;
-3. 熟悉阿里云和AWS云服务部署;
-4. 具有多年物联开发经验, 熟悉Mqtt/mosquitto;
-5. 熟悉linux系统(ubuntu), 脚本管理工具Ansible;
-6. 了解并具有内存缓存数据库使用经验，Redis;
-7. 最熟悉的编辑器VIM;
-8. 最近关注: docker
+1. 具有7年Ruby on Rails全栈开发经验, 熟悉rspec测试和API开发;
+1. 具有5年React (Native) 开发经验
+1. 熟悉微信小程序/公众号开发，支付功能/云开发
+1. 熟悉PostgreSQL, 数据库语言SQL, 部署工具sqitch, RESTful自动部署工具PostgREST;
+1. 熟悉C#网页后端API开发
+1. 熟悉阿里云, AWS和Azure云服务和部署;
+1. 具有多年物联开发经验, 熟悉Mqtt/mosquitto;
+1. 熟悉linux系统(ubuntu);
+1. 了解并具有内存缓存数据库使用经验，Redis;
+1. 最熟悉的编辑器VIM;
 
 `主要语言`
 
-     - 后端: Ruby, SQL, Nodejs
-     - 微服务: Nodejs, Python
+     - 数据库：PostgreSQL
+     - 后端: RubyOnRails, C#, PostgREST, Nodejs
+     - 微服务: Nodejs, Python, C#
      - 前端框架：React, Taro(微信小程序)
-     - 前端UI集：BlueprintJS, Ant Design, MATERIAL-UI
+     - 前端UI集：BlueprintJS, Ant Design, MATERIAL-UI(mui)
      - 客户端应用开发: Android，Cordova，Electron, ReactNative
 
 ---
@@ -63,6 +65,8 @@ _2008.6 - 2012.6_ 工科学士, 材料科学与工程, *浙江大学*, 中国
 - 基于AWS/Azure云服务
 - PostgreSQL + PostGREST + Sqitch作为后端
 - React + d3js做可视化前端开发
+- Dotnet + React
+- Azure Functions微服务，包括NLP，GEO，Company服务等
 
 ---
 <br>
