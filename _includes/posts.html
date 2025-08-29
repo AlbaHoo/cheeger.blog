@@ -2,15 +2,18 @@
     {% include panel.html %}
     <input type="text" id="search-input" placeholder="搜索">
     <ul id="results-container"></ul>
+    <!-- show all post of either en or cn -->
     {% if include.category == 'all' %}
       {% assign filtered = site.posts | where: "lang", site.lang %}
       {% for post in filtered %}
         {% include post_item.html post=post %}
       {% endfor %}
+    <!-- show all post of all language -->
     {% elsif include.category == 'all_lang' %}
       {% for post in site.posts %}
         {% include post_item.html post=post %}
       {% endfor %}
+    <!-- show all post of category && lang -->
     {% else %}
       {% for post in site.posts %}
         {% if post.category == include.category and post.lang == site.lang %}
