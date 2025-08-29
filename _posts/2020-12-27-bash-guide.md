@@ -1,209 +1,406 @@
 ---
 layout: post
-title:  "find/sed/bash-ish"
+title:  "find/sed/bash/csv"
 lang: en
 icon: B
 category: linux
 tags: bash, find, sed
 comments: true
 ---
+
+# Linux/Bash Command Reference Guide
+
+A comprehensive reference for common Linux and Bash commands, utilities, and system information.
+
+## Table of Contents
+
 - [Find](#find)
 - [Sed](#sed)
-- [Bash](#bash-ish)
-    - [String operation](#string-operation)
-    - [Loop](#loop)
-    - [IF-ELSE](#if-else)
-- [Kernal](#kernal)
-    - [linux](#linux)
-    - [android](#android)
-
+- [Bash Scripting](#bash-scripting)
+  - [String Operations](#string-operations)
+  - [Loops](#loops)
+  - [Conditionals (IF-ELSE)](#conditionals-if-else)
+- [Text Processing](#text-processing)
+  - [Remove ^M Characters in Vim](#remove-m-characters-in-vim)
+  - [Convert CSV to JSON](#convert-csv-to-json)
+- [System Information](#system-information)
+  - [Linux](#linux)
+  - [Android](#android)
 
 ---
-<br/>
-# Find
-```
-find . -type [f/d] -name prefix*suffix
+
+## Find
+
+### Basic Syntax
+```bash
+find . -type [f/d] -name "pattern"
 ```
 
-Replace all file's extention from js to jsx if file is start with Capital letter
+### Common Examples
 
+**Find files and directories by name:**
+```bash
+# Find files starting with "test"
+find . -type f -name "test*"
+
+# Find directories containing "backup"
+find . -type d -name "*backup*"
 ```
+
+**Replace file extensions for files starting with capital letters:**
+```bash
+# Change .js to .jsx for files starting with capital letters
 find . -type f -name "[[:upper:]]*.js" -exec sh -c 'mv "$1" "${1}x"' _ {} \;
 ```
 
----
-<br/>
-# Sed
+**Find and process multiple files:**
+```bash
+# Find all Python files modified in last 7 days
+find . -type f -name "*.py" -mtime -7
+
+# Find and delete empty directories
+find . -type d -empty -delete
 ```
+
+---
+
+## Sed
+
+### Basic Syntax
+```bash
+sed -i 's/pattern/replacement/flags' file
+```
+
+**Note:** On macOS, use `sed -i ''` (with empty quotes)
+
+### Common Examples
+
+**Basic find and replace:**
+```bash
+# Replace text in Ruby files (with capture group)
 sed -i '' 's/\(regex\)/\1, extra string/g' app/models/*.rb
 ```
-node: `''` is needed for mac
 
-Find all rb files and replace all `FactoryGirl` to `FactoryBot`
+**Mass find and replace across multiple files:**
+```bash
+# Replace FactoryGirl with FactoryBot in all Ruby files
+find . -type f -name "*.rb" -exec sed -i '' 's/FactoryGirl/FactoryBot/g' {} \;
 ```
-$ find ./ -type f -name *.rb -exec sed -i '' 's/FactoryGirl/FactoryBot/g'
+
+**Advanced sed operations:**
+```bash
+# Delete lines containing pattern
+sed -i '/pattern/d' file.txt
+
+# Insert text at specific line number
+sed -i '3i\New line text' file.txt
+
+# Replace only first occurrence per line
+sed 's/old/new/' file.txt
 ```
 
 ---
-<br/>
 
-# Bash-ish
-## String Operation
+## Bash Scripting
 
-### () vs {}
+### String Operations
 
-(): Parentheses cause the commands to be run in a subshell.
+#### Parentheses vs Braces
+- `()`: Commands run in a subshell (isolated environment)
+- `{}`: Commands grouped together in current shell
 
-{}: Braces cause the commands to be grouped together but not in a subshell.
-
-### With and without $
-
-    #!/bin/bash
-    var1="A B  C   D"
-    echo $var1   # A B C D
-    echo "$var1" # A B  C   D
-
-### String length
-
-    export stringZ=abcABC123ABCabc
-    echo ${#stringZ}                 # 15
-    echo `expr length $stringZ`      # 15
-    echo `expr "$stringZ" : '.*'`    # 15
-
-### Substring
-
-    export stringZ=abcABC123ABCabc
-    echo ${stringZ:1}          # bcABC123ABCabc
-    echo ${stringZ:7:3}        # 23A
-                               # Three characters of substring.
-
-### Substring replacement
-
-`${parameter/pattern/string}`
-
-- Replace first match with `string`;
-- If pattern begins with '/', all matches of pattern are replaced with string
-- If pattern begins with '#', it must match at the beginning
-- If pattern begins with '%', it must match at the end
-- If string is null, delete match(es)
-
-      export stringZ=abcABC123ABCabc
-      echo ${stringZ/abc/xyz}       # xyzABC123ABCabc
-                                    # Replaces first match of 'abc' with 'xyz'.
-
-      echo ${stringZ//abc/xyz}      # xyzABC123ABCxyz
-                                    # Replaces all matches of 'abc' with # 'xyz'.
-
-      echo ${stringZ/#abc/XYZ}      # XYZABC123ABCabc
-                                    # Replaces front-end match of 'abc' with 'XYZ'.
-
-      echo ${stringZ/%abc/XYZ}      # abcABC123ABCXYZ
-                                    # Replaces back-end match of 'abc' with 'XYZ'.
-
-### Params with default:
-
-    # ${parameter-default}, ${parameter:-default}
-    # var is not declared
-    echo ${var-'1'}   # 1
-    # var is declared, but null
-    echo ${var:-'2'}  # 2
-
-### arithmetic expansion
-
-The arithmetic expansion can be performed using the double parentheses ((...)) and $((...))
-
-    i=0
-    echo "$((i + 1))" # 2
-
-
-## Loop
-
-### Loop lines over a file
-
-    while IFS= read -r line; do
-      echo "fetch daily kdata for $line"
-      # extra command # python daily_kdata.py --code $line --start 1989-01-01 --end 2020-09-08
-    done < filepath
-
-### Loop file over `find`
-
-Find all filename contains `index.less`, and rename pattern `index.less` to `style.less`
-
-    for file in $(find src -type f -name *index.less*); do mv $file "${file%%index.less}style.less"; done
-
-
-Resize all image with png to 300x300 and rename to -300.png
-
-    for f in *; do convert "$f" -resize 300x300 "${f%%.png}-300.png";done
-
-Loop over folder for csv files:
-    i=0
-    for filename in ./baostock/csv/day/*.csv
-    do
-      i=$((i + 1)) # number operation
-      echo "dumping $filename... [$i]"
-      cat $filename
-    done
-
-### Loop with different IP:
-
-    for i in {1..8}; do curl --header "X-Forwarded-For: 1.2.3.$i" [url]; done
-
-## IF-ELSE
-Syntax
-check `man test` to check all the possible test operation
-
-    #!/bin/bash
-    if [ <some test> ]
-    then
-      <commands>
-    fi
-
-| Operation         | Description       |
-| -------------:|:-------------|
-| ! EXPRESSION       | The EXPRESSION is false. |
-| -n STRING          | The length of STRING is greater than zero.    |
-| -z STRING          | The lengh of STRING is zero (ie it is empty).      |
-| STRING1 = STRING2	 | STRING1 is equal to STRING2 |
-| STRING1 != STRING2 ||
-| int1 -eq int2      | INTEGER1 is numerically equal to INTEGER2 |
-| int1 -gt int2      | greater than |
-| int1 -lt int2      | less than |
-| -d File            | FILE exists and is a directory. |
-| -e File            | file exists |
-| -r File            | File exists and read permission is granted |
-| -s File            | FILE exists and it's size is greater than zero (ie. it is not empty). |
-| -w File            | FILE exists and the write permission is granted. |
-| -x FILE            | FILE exists and the execute permission is granted. |
-
-Note:
-
-    test 001 = 1
-    echo $? # 1
-    test 001 -eq 1
-    echo $? # 0
-
-    # 0       expression evaluated to true.
-    # 1       expression evaluated to false or expression was missing.
-    # >1      An error occurred.
-
-# Kernal
-
-## Linux
-To find out what version of Linux (distro) you are running, try these 3 commands:
-
-    $ cat /etc/*-release
-    $ uname -a
-    $ cat /proc/version
-
-## Android
-### How to check android CPU is 32 or 64
-
+#### Variable Quoting
 ```bash
-$ cat /proc/cpuinfo
+#!/bin/bash
+var1="A B  C   D"
+echo $var1   # Output: A B C D (word splitting occurs)
+echo "$var1" # Output: A B  C   D (preserves spacing)
 ```
 
-the result will looks like this:
+#### String Length
+```bash
+export stringZ="abcABC123ABCabc"
+echo ${#stringZ}                 # 15
+echo $(expr length $stringZ)     # 15
+echo $(expr "$stringZ" : '.*')   # 15
+```
+
+#### Substrings
+```bash
+export stringZ="abcABC123ABCabc"
+echo ${stringZ:1}          # bcABC123ABCabc (from position 1)
+echo ${stringZ:7:3}        # 23A (3 characters starting at position 7)
+```
+
+#### String Replacement
+**Syntax:** `${parameter/pattern/string}`
+
+- Single `/`: Replace first match
+- Double `//`: Replace all matches
+- `#` prefix: Match at beginning
+- `%` prefix: Match at end
+- Empty replacement: Delete matches
+
+```bash
+export stringZ="abcABC123ABCabc"
+echo ${stringZ/abc/xyz}       # xyzABC123ABCabc (first match)
+echo ${stringZ//abc/xyz}      # xyzABC123ABCxyz (all matches)
+echo ${stringZ/#abc/XYZ}      # XYZABC123ABCabc (beginning)
+echo ${stringZ/%abc/XYZ}      # abcABC123ABCXYZ (end)
+```
+
+#### Default Parameters
+```bash
+# ${parameter-default}: Use default if unset
+# ${parameter:-default}: Use default if unset or empty
+
+# var is unset
+echo ${var-'default'}   # default
+
+# var is set but empty
+var=""
+echo ${var:-'default'}  # default
+```
+
+#### Arithmetic Expansion
+```bash
+i=5
+echo $((i + 1))    # 6
+echo $((i * 2))    # 10
+```
+
+### Loops
+
+#### Reading Files Line by Line
+```bash
+# Process each line of a file
+while IFS= read -r line; do
+    echo "Processing: $line"
+    # Add your commands here
+done < "filename.txt"
+```
+
+#### Looping with Find Results
+```bash
+# Rename files found by find
+for file in $(find src -type f -name "*index.less*"); do
+    mv "$file" "${file%%index.less}style.less"
+done
+
+# Process images
+for f in *.png; do
+    convert "$f" -resize 300x300 "${f%%.png}-300.png"
+done
+```
+
+#### Processing CSV Files
+```bash
+i=0
+for filename in ./data/*.csv; do
+    i=$((i + 1))
+    echo "Processing $filename... [$i]"
+    # Process file here
+done
+```
+
+#### Network Operations
+```bash
+# Test with different IP addresses
+for i in {1..8}; do
+    curl --header "X-Forwarded-For: 1.2.3.$i" "http://example.com"
+done
+```
+
+### Conditionals (IF-ELSE)
+
+#### Basic Syntax
+```bash
+#!/bin/bash
+if [ condition ]; then
+    # commands
+elif [ another_condition ]; then
+    # commands
+else
+    # commands
+fi
+```
+
+#### Test Operations
+
+| Operation | Description |
+|-----------|-------------|
+| `! EXPRESSION` | Expression is false |
+| `-n STRING` | String length > 0 |
+| `-z STRING` | String length = 0 |
+| `STRING1 = STRING2` | Strings are equal |
+| `STRING1 != STRING2` | Strings are not equal |
+| `int1 -eq int2` | Integers are equal |
+| `int1 -gt int2` | Greater than |
+| `int1 -lt int2` | Less than |
+| `-d FILE` | File is directory |
+| `-e FILE` | File exists |
+| `-f FILE` | File exists and is regular file |
+| `-r FILE` | File is readable |
+| `-w FILE` | File is writable |
+| `-x FILE` | File is executable |
+| `-s FILE` | File exists and is not empty |
+
+#### Examples
+```bash
+#!/bin/bash
+if [ -f "config.txt" ]; then
+    echo "Config file exists"
+fi
+
+if [ $# -eq 0 ]; then
+    echo "No arguments provided"
+    exit 1
+fi
+
+# Numeric comparison (note: string vs numeric)
+test "001" = "1"    # false (string comparison)
+test "001" -eq 1    # true (numeric comparison)
+```
+
+---
+
+## Text Processing
+
+### Remove ^M Characters in Vim
+
+When working with files that have Windows line endings (CRLF), you may see `^M` characters in Vim.
+
+**Solution:**
+1. **Force DOS format reading:**
+   ```vim
+   :e ++ff=dos
+   ```
+   This tells Vim to read the file again with DOS format, removing CRLF endings.
+
+2. **Set Unix format:**
+   ```vim
+   :set ff=unix
+   ```
+
+3. **Save and quit:**
+   ```vim
+   :wq
+   ```
+
+**Alternative methods:**
+```bash
+# Using dos2unix command
+dos2unix filename.txt
+
+# Using sed
+sed -i 's/\r$//' filename.txt
+
+# Using tr
+tr -d '\r' < input.txt > output.txt
+```
+
+### Convert CSV to JSON
+
+#### Basic CSV to JSON Array
+```bash
+# Convert CSV to JSON array of objects
+cat data.csv | python -c "
+import csv, json, sys
+print(json.dumps([dict(r) for r in csv.DictReader(sys.stdin)])
+" | jq
+```
+
+#### Create Key-Value Object from CSV
+```bash
+# Convert CSV to single object using one column as keys
+cat nace-es-dedup.csv | python -c "
+import csv, json, sys
+print(json.dumps([dict(r) for r in csv.DictReader(sys.stdin)]))
+" | jq 'map({(.Code): .ES}) | add'
+```
+
+#### Advanced Processing Examples
+```bash
+# Filter and transform while converting
+cat data.csv | python -c "
+import csv, json, sys
+data = [dict(r) for r in csv.DictReader(sys.stdin)]
+filtered = [item for item in data if item.get('status') == 'active']
+print(json.dumps(filtered))
+" | jq '.[] | select(.price > 100)'
+
+# Convert with custom field mapping
+cat inventory.csv | python -c "
+import csv, json, sys
+reader = csv.DictReader(sys.stdin)
+mapped = []
+for row in reader:
+    mapped.append({
+        'id': row['item_id'],
+        'name': row['item_name'],
+        'cost': float(row['price'])
+    })
+print(json.dumps(mapped))
+" | jq
+```
+
+---
+
+## System Information
+
+### Linux
+
+**Check Linux distribution and version:**
+```bash
+# Method 1: Release information
+cat /etc/*-release
+
+# Method 2: System information
+uname -a
+
+# Method 3: Kernel version
+cat /proc/version
+
+# Method 4: OS info (newer systems)
+hostnamectl
+
+# Method 5: LSB information
+lsb_release -a
+```
+
+**Additional system info commands:**
+```bash
+# CPU information
+cat /proc/cpuinfo
+
+# Memory information
+cat /proc/meminfo
+free -h
+
+# Disk usage
+df -h
+lsblk
+
+# System uptime
+uptime
+
+# Kernel modules
+lsmod
+```
+
+### Android
+
+#### Check CPU Architecture (32-bit vs 64-bit)
+```bash
+# Primary method
+cat /proc/cpuinfo
+
+# Alternative methods
+uname -m
+getprop ro.product.cpu.abi
+```
+
+**Sample output for 64-bit ARM:**
 ```
 Processor : AArch64 Processor rev 4 (aarch64)
 processor : 0
@@ -218,8 +415,45 @@ CPU part : 0xd03
 CPU revision : 4
 
 Hardware : Amlogic
-Serial : adsf
+Serial : [redacted]
+```
+
+#### Android-specific Commands
+```bash
+# Android version
+getprop ro.build.version.release
+
+# Device model
+getprop ro.product.model
+
+# Build information
+getprop ro.build.fingerprint
+
+# ABI information
+getprop ro.product.cpu.abilist
+
+# Check if device is rooted
+su -c "echo 'Device is rooted'"
 ```
 
 ---
-<br/>
+
+## Additional Tips
+
+### Performance and Efficiency
+- Use `find` with `-exec` sparingly on large directories
+- Consider `xargs` for better performance with multiple files
+- Use `parallel` for CPU-intensive operations across multiple files
+- Quote variables to prevent word splitting: `"$variable"`
+
+### Safety Practices
+- Always test commands on sample data first
+- Use `--dry-run` options when available
+- Make backups before bulk operations
+- Use version control for important changes
+
+### Debugging
+- Add `set -x` to bash scripts for debugging
+- Use `echo` statements to verify variable values
+- Check exit codes with `$?`
+- Use `shellcheck` to validate bash scripts
